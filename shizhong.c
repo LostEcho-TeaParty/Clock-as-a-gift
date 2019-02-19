@@ -1,0 +1,485 @@
+#include<reg52.h>
+#include<define.h>
+void delay(uint z)
+{
+	uint x,y;
+	for(x=z;x>0;x--)
+		for(y=110;y>0;y--);
+}
+
+void didi() 
+{
+	beep=0;
+	delay(40);
+	beep=1;
+	delay(40);
+	beep=0;
+	delay(40);
+	beep=1;
+	delay(40);
+	beep=0;
+	delay(100);
+	beep=1;
+} 
+void write_com(uchar com)
+{
+	rs=0;
+	lcden=0;
+	P0=com;
+	delay(5);
+	lcden=1;
+	delay(5);
+	lcden=0;	
+}
+
+void write_date(uchar date)
+{
+	rs=1;
+	lcden=0;
+	P0=date;
+	delay(5);
+	lcden=1;
+	delay(5);
+	lcden=0;	
+}
+void LCDinit() //进入时钟界面
+{
+	uchar num1;
+	lcden=0;
+	rw=0;
+	write_com(0x38);
+	write_com(0x0c);
+	write_com(0x06);
+	write_com(0x01);
+	write_com(0x80);
+	for(num1=0;num1<16;num1++)
+	{
+		write_date(table2[num1]);
+		delay(50);
+	}
+	write_com(0x80+0x40);
+	for(num1=0;num1<12;num1++)
+	{
+		write_date(table3[num1]);
+		delay(50);
+	}
+	delay(5000);
+}
+void shizhong()//时钟界面
+{
+	uchar num;
+	write_com(0x01);
+	for(num=0;num<16;num++)
+	{
+		write_date(table[num]);
+		delay(5);
+	}
+	write_com(0x80+0x40);
+	for(num=0;num<12;num++)
+	{
+		write_date(table1[num]);
+		delay(5);
+	}
+}
+void naozhong()	//闹钟界面
+{
+	uchar num2;
+	write_com(0x01);
+	for(num2=0;num2<12;num2++)
+	{
+		write_date(table4[num2]);
+		delay(5);
+	}
+	write_com(0x80+0x40);
+	for(num2=0;num2<12;num2++)
+	{
+		write_date(table5[num2]);
+		delay(5);
+	}
+	nmiao=read_ds(0x01);	
+	nfen=read_ds(0x03);
+	nshi=read_ds(0x05);
+	write_sfm(0x40+9,nmiao);
+	write_sfm(0x40+6,nfen);
+	write_sfm(0x40+3,nshi);	
+}
+void init()
+{
+	EA=1;
+	EX1=1;
+	IT1=1;
+	LCDinit();
+//	set_time();// 用于调时间便于调试
+	write_ds(0x0B,0x26);
+//	write_ds(0x0a,0x20);//首次使用芯片开启时钟震荡
+	read_ds(0x0c);
+	write_com(0x80);
+	shizhong();
+}
+void write_sfm(uchar add,uchar date)
+{
+	uchar shi,ge;
+	shi=date/10;
+	ge=date%10;
+	write_com(0x80+add);
+	write_date(0x30+shi);
+	write_date(0x30+ge);
+}
+
+void keyscan()
+{
+	if(flag1==1)   //关闹钟
+	{
+		if(s1==0)
+		{	
+			delay(5);
+			if(s1==0)
+			{
+				while(!s1);
+				flag1=0;
+			}
+			 	
+		}
+		if(s2==0)
+		{	
+			delay(5);
+			if(s2==0)
+			{
+				while(!s2);
+				flag1=0;
+			}
+			 	
+		}
+		if(s3==0)
+		{	
+			delay(5);
+			if(s3==0)
+			{
+				while(!s3);
+				flag1=0;
+			}
+			 	
+		}
+	}
+		
+	if(s1==0)	
+	{
+		delay(5);
+		if(s1==0)
+		{	s1num++;
+			flag=1;
+			while(!s1);
+			if(s1num==1)//秒位
+			{
+				write_com(0x80+0x40+10);
+				write_com(0x0f);
+			}
+		}
+			if(s1num==2)//分位
+			{
+				write_com(0x80+0x40+7);
+			}
+			if(s1num==3)//时位
+			{
+				write_com(0x80+0x40+4);
+			}
+			if(s1num==4)//星期位
+			{
+				write_com(0x80+14);
+			}
+			if(s1num==5)//日位
+			{
+				write_com(0x80+9);
+			}
+			if(s1num==6)//月位
+			{
+				write_com(0x80+6);
+			}
+			if(s1num==7)//年位
+			{
+				write_com(0x80+3);
+			}
+			if(s1num==8)//进入闹钟秒位
+			{
+				naozhong();
+				write_com(0x80+0x40+9);
+			}
+			if(s1num==9)//闹分位
+			{
+				write_com(0x80+0x40+6);
+			}
+			if(s1num==10)//闹时位
+			{
+				write_com(0x80+0x40+3);
+			}
+			if(s1num==11)
+			{
+				s1num=0;
+				shizhong();
+				write_com(0x0c);
+				flag=0;
+				write_ds(0x00,miao);
+				write_ds(0x01,nmiao);
+				write_ds(0x02,fen);
+				write_ds(0x03,nfen);
+				write_ds(0x04,shi);
+				write_ds(0x05,nshi);
+				write_ds(0x06,xq);	
+				write_ds(0x07,ri);
+				write_ds(0x08,yue);
+				write_ds(0x09,nian);
+			}				
+		}
+		if(s1num!=0)
+		{
+			if(s2==0)
+			{
+				delay(1);
+				if(s2==0)
+				{
+					while(!s2);
+					if(s1num==1)
+					{
+						miao++;
+						if(miao==60)
+							miao=0;
+						write_sfm(0x40+10,miao);
+						write_com(0x80+0x40+10);						
+					}
+					if(s1num==2)
+					{
+						fen++;
+						if(fen==60)
+							fen=0;
+						write_sfm(0x40+7,fen);
+						write_com(0x80+0x40+7);
+					}
+					if(s1num==3)
+					{
+						shi++;
+						if(shi==24)
+							shi=0;
+						write_sfm(0x40+4,shi);
+						write_com(0x80+0x40+4);
+					}
+					if(s1num==4)
+					{
+						xq++;
+						if(xq==7)
+							xq=0;
+						write_sfm(14,xq);
+						write_com(0x80+14);
+					}
+					if(s1num==5)
+					{
+						ri++;
+						if(ri==32)
+							ri=0;
+						write_sfm(9,ri);
+						write_com(0x80+9);
+					}
+					if(s1num==6)
+					{
+						yue++;
+						if(yue==13)
+							yue=0;
+						write_sfm(6,yue);
+						write_com(0x80+6);
+					}
+					if(s1num==7)
+					{
+						nian++;
+						if(nian==100)
+							nian=15;
+						write_sfm(3,nian);
+						write_com(0x80+3);
+					}
+					if(s1num==8)
+					{
+						nmiao++;
+						if(nmiao==60)
+							nmiao=0;
+						write_sfm(0x40+9,nmiao);
+						write_com(0x80+0x40+9);						
+					}
+					if(s1num==9)
+					{
+						nfen++;
+						if(nfen==60)
+							nfen=0;
+						write_sfm(0x40+6,nfen);
+						write_com(0x80+0x40+6);
+					}
+					if(s1num==10)
+					{
+						nshi++;
+						if(nshi==24)
+							nshi=0;
+						write_sfm(0x40+3,nshi);
+						write_com(0x80+0x40+3);
+					}
+		
+				}
+			}
+			if(s3==0)
+			{
+				delay(1);
+				if(s3==0)
+				{
+					while(!s3);
+					if(s1num==1)
+					{
+						miao--;
+						if(miao==-1)
+							miao=59;
+						write_sfm(0x40+10,miao);
+						write_com(0x80+0x40+10);
+					}
+					if(s1num==2)
+					{
+						fen--;
+						if(fen==-1)
+							fen=59;
+						write_sfm(0x40+7,fen);
+						write_com(0x80+0x40+7);
+					}
+					if(s1num==3)
+					{
+						shi--;
+						if(shi==-1)
+							shi=23;
+						write_sfm(0x40+4,shi);
+						write_com(0x80+0x40+4);
+					}
+					if(s1num==4)
+					{
+						xq--;
+						if(xq==-1)
+							xq=6;
+						write_sfm(14,xq);
+						write_com(0x80+14);
+					}
+					if(s1num==5)
+					{
+						ri--;
+						if(ri==-1)
+							ri=31;
+						write_sfm(9,ri);
+						write_com(0x80+9);
+					}
+					if(s1num==6)
+					{
+						yue--;
+						if(yue==-1)
+							yue=12;
+						write_sfm(6,yue);
+						write_com(0x80+6);
+					}
+					if(s1num==7)
+					{
+						nian--;
+						if(nian==14)
+							nian=15;
+						write_sfm(3,nian);
+						write_com(0x80+3);
+					}
+					if(s1num==8)
+					{
+						nmiao--;
+						if(nmiao==-1)
+							nmiao=59;
+						write_sfm(0x40+10,nmiao);
+						write_com(0x80+0x40+10);
+					}
+					if(s1num==9)
+					{
+						nfen--;
+						if(nfen==-1)
+							nfen=59;
+						write_sfm(0x40+7,nfen);
+						write_com(0x80+0x40+7);
+					}
+					if(s1num==10)
+					{
+						nshi--;
+						if(nshi==-1)
+							nshi=23;
+						write_sfm(0x40+4,nshi);
+						write_com(0x80+0x40+4);
+					}
+				}
+			}
+		}
+}
+
+void write_ds(uchar add,uchar date)
+{
+	dscs=0;
+	dsas=1;
+	dsds=1;
+	dsrw=1;
+	P2=add;
+	dsas=0;
+	dsrw=0;
+	P2=date;
+	dsas=1;
+	dsas=1;
+}
+
+uchar read_ds(uchar add)
+{
+	uchar ds_date;
+	dsas=1;
+	dsds=1;
+	dsrw=1;
+	dscs=0;
+	P2=add;
+	dsas=0;
+	dsds=0;
+	P2=0xff;
+	ds_date=P2;
+	dsds=1;
+	dsas=1;
+	dscs=1;
+	return ds_date;	
+}
+/*void set_time()
+{
+
+	write_ds(4,15);
+	write_ds(2,15);
+} */
+  
+void main()
+{
+	init();
+	while(1)
+	{
+		keyscan();
+		if(flag1==1)
+			didi();
+		if(flag==0)
+		{
+			miao=read_ds(0x00);	
+			fen=read_ds(0x02);
+			shi=read_ds(0x04);
+			xq=read_ds(0x06);
+			ri=read_ds(0x07);	
+			yue=read_ds(0x08);
+			nian=read_ds(0x09);
+			write_sfm(0x40+10,miao);
+			write_sfm(0x40+7,fen);
+			write_sfm(0x40+4,shi);
+			write_sfm(14,xq);
+			write_sfm(9,ri);
+			write_sfm(6,yue);
+			write_sfm(3,nian);
+		}
+	}
+}
+
+void exter() interrupt 2
+{	uchar c;
+	flag1=1;
+	c=read_ds(0x0c);
+} 

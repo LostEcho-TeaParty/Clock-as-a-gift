@@ -1,0 +1,100 @@
+C51 COMPILER V9.56.0.0   1602                                                              01/30/2018 13:23:32 PAGE 1   
+
+
+C51 COMPILER V9.56.0.0, COMPILATION OF MODULE 1602
+OBJECT MODULE PLACED IN .\Objects\1602.obj
+COMPILER INVOKED BY: E:\Keil_v5\C51\BIN\C51.EXE 1602.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\1602
+                    -.lst) TABS(2) OBJECT(.\Objects\1602.obj)
+
+line level    source
+
+   1          #include <reg51.h>
+   2          #define uchar unsigned char
+   3          #define uint unsigned int
+   4            
+   5          sbit rs=P2^6;
+   6          sbit lcden=P2^7;
+   7          sbit wr=P2^5;
+   8          
+   9          uchar code table[]="I LOVE MCU!";
+  10          uchar code table1[]="TO Yu Pei";
+  11          uchar num;
+  12          
+  13          void delayms(uint xms);
+  14          void write_com(uchar com);
+  15          void write_date(uchar date);
+  16          void init();
+  17          
+  18          void main()
+  19          {
+  20   1        init();
+  21   1        write_com(0x80);
+  22   1        for(num=0;num<11;num++)
+  23   1        {
+  24   2          write_date(table[num]);
+  25   2          delayms(5);
+  26   2        }
+  27   1        write_com(0x80+0x40);
+  28   1        for(num=0;num<9;num++)
+  29   1        {
+  30   2          write_date(table1[num]);
+  31   2          delayms(5);
+  32   2        }
+  33   1        while(1);
+  34   1      }
+  35          
+  36          void delayms(uint xms)
+  37          {
+  38   1        uint i,j;
+  39   1        for(i=xms;i>0;i--)
+  40   1          for(j=123;j>0;j--);
+  41   1      }
+  42          
+  43          void write_com(uchar com)              
+  44          {
+  45   1        rs=0;
+  46   1        lcden=0;
+  47   1        wr=0;
+  48   1        P0=com;
+  49   1        delayms(5);
+  50   1        lcden=1;
+  51   1        delayms(5);
+  52   1        lcden=0;
+  53   1      }
+  54          
+C51 COMPILER V9.56.0.0   1602                                                              01/30/2018 13:23:32 PAGE 2   
+
+  55          void write_date(uchar date)
+  56          {
+  57   1        rs=1;
+  58   1        lcden=0;
+  59   1        wr=0;
+  60   1        P0=date;
+  61   1        delayms(5);
+  62   1        lcden=1;
+  63   1        delayms(5);
+  64   1        lcden=0;
+  65   1      }
+  66          
+  67          void init()
+  68          {
+  69   1        lcden=0;
+  70   1        write_com(0x38);
+  71   1        write_com(0x0c);
+  72   1        write_com(0x06);
+  73   1        write_com(0x01);
+  74   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    152    ----
+   CONSTANT SIZE    =     22    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

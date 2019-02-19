@@ -1,0 +1,5 @@
+".\Objects\lcd.obj",
+".\Objects\ds1302.obj",
+".\Objects\main.obj" 
+TO ".\Objects\ds1302 2.0" 
+PRINT(".\Listings\ds1302 2.m51")

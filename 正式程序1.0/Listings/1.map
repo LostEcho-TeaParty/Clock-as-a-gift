@@ -1,0 +1,567 @@
+LX51 LINKER/LOCATER V4.66.66.0                                                          01/25/2018  11:40:26  PAGE 1
+
+
+LX51 LINKER/LOCATER V4.66.66.0, INVOKED BY:
+E:\KEIL_V5\C51\BIN\LX51.EXE .\Objects\1.0.obj TO .\Objects\1.0 PRINT (.\Listings\1.map) REMOVEUNUSED
+
+
+
+
+PROGRAM RECURSIONS REMOVED FROM CALL TREE
+=========================================
++--> _DELAYMS/1_0
+<--+ _WRITE_DATE/1_0
+
+
+
+CPU MODE:     8051 MODE
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\1.0.obj (1_0)
+         COMMENT TYPE 0: C51 V9.56.0.0
+  E:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+  E:\KEIL_V5\C51\LIB\C51S.LIB (?C?SCDIV)
+         COMMENT TYPE 1: A51 / ASM51 Assembler
+
+
+ACTIVE MEMORY CLASSES OF MODULE:  .\Objects\1.0 (1_0)
+
+BASE        START       END         USED      MEMORY CLASS
+==========================================================
+C:000000H   C:000000H   C:00FFFFH   00013EH   CODE
+I:000000H   I:000000H   I:00007FH   000017H   DATA
+C:000000H   C:000000H   C:00FFFFH   00003EH   CONST
+I:000020H.0 I:000020H.0 I:00002FH.7 000000H.3 BIT
+I:000000H   I:000000H   I:0000FFH   000001H   IDATA
+
+
+MEMORY MAP OF MODULE:  .\Objects\1.0 (1_0)
+
+
+START     STOP      LENGTH    ALIGN  RELOC    MEMORY CLASS   SEGMENT NAME
+=========================================================================
+
+* * * * * * * * * * *   D A T A   M E M O R Y   * * * * * * * * * * * * *
+000000H   000007H   000008H   ---    AT..     DATA           "REG BANK 0"
+000008H   000015H   00000EH   BYTE   UNIT     DATA           ?DT?1_0
+000016H   000016H   000001H   BYTE   UNIT     DATA           _DATA_GROUP_
+000017H.0 00001FH.7 000009H.0 ---    ---      **GAP**
+000020H.0 000020H.2 000000H.3 BIT    UNIT     BIT            ?BI?1_0
+000020H.3 000020H   000000H.5 ---    ---      **GAP**
+000021H   000021H   000001H   BYTE   UNIT     IDATA          ?STACK
+
+* * * * * * * * * * *   C O D E   M E M O R Y   * * * * * * * * * * * * *
+000000H   000002H   000003H   ---    OFFS..   CODE           ?CO??C_STARTUP?0
+000003H   000005H   000003H   BYTE   OFFS..   CODE           ?1_0?00003
+000006H   00005FH   00005AH   BYTE   UNIT     CODE           ?PR?INIT?1_0
+000060H   00008BH   00002CH   BYTE   UNIT     CODE           ?PR?_DELAYMS?1_0
+00008CH   0000AFH   000024H   BYTE   UNIT     CODE           ?PR?_WRITE_DS?1_0
+0000B0H   0000D1H   000022H   BYTE   UNIT     CODE           ?C?LIB_CODE
+0000D2H   0000EBH   00001AH   BYTE   UNIT     CODE           ?PR?_READ_DS?1_0
+0000ECH   000100H   000015H   BYTE   UNIT     CODE           ?PR?EXTER?1_0
+000101H   000110H   000010H   BYTE   UNIT     CODE           ?PR?SET_TIME?1_0
+000111H   00011FH   00000FH   BYTE   UNIT     CODE           ?PR?_WRITE_COM?1_0
+000120H   00012EH   00000FH   BYTE   UNIT     CODE           ?PR?_WRITE_DATE?1_0
+00012FH   00013AH   00000CH   BYTE   UNIT     CODE           ?C_C51STARTUP
+00013BH   00013DH   000003H   BYTE   UNIT     CODE           ?PR?MAIN?1_0
+LX51 LINKER/LOCATER V4.66.66.0                                                        01/25/2018  11:40:26  PAGE 2
+
+
+00013EH   00017BH   00003EH   BYTE   UNIT     CONST          ?CO?1_0
+
+* * * * * * * * *   R E M O V E D     S E G M E N T S   * * * * * * * *
+   *DEL*:           00000CH   BYTE   UNIT     CODE           ?PR?DI?1_0
+   *DEL*:           00002AH   BYTE   UNIT     CODE           ?PR?_WRITE_SFM?1_0
+   *DEL*:           000001H   BYTE   UNIT     DATA           ?DT?_WRITE_SFM?1_0
+   *DEL*:           00002AH   BYTE   UNIT     CODE           ?PR?_WRITE_NYR?1_0
+   *DEL*:           000001H   BYTE   UNIT     DATA           ?DT?_WRITE_NYR?1_0
+   *DEL*:           000068H   BYTE   UNIT     CODE           ?PR?_WRITE_WEEK?1_0
+   *DEL*:           000001H   BYTE   UNIT     DATA           ?DT?_WRITE_WEEK?1_0
+   *DEL*:           0000FBH   BYTE   UNIT     CODE           ?PR?KEYSCAN?1_0
+   *DEL*:           000016H   BYTE   UNIT     CODE           ?PR?READ_ALARM?1_0
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\1.0 (1_0)
+
+
+FUNCTION/MODULE              BIT_GROUP   DATA_GROUP 
+--> CALLED FUNCTION/MODULE  START  STOP  START  STOP
+====================================================
+EXTER/1_0                   ----- -----  0016H 0016H
+  +--> _READ_DS/1_0
+
+_READ_DS/1_0                ----- -----  ----- -----
+
+*** NEW ROOT **************
+
+?C_C51STARTUP               ----- -----  ----- -----
+  +--> MAIN/1_0
+
+MAIN/1_0                    ----- -----  ----- -----
+  +--> INIT/1_0
+
+INIT/1_0                    ----- -----  ----- -----
+  +--> _WRITE_DS/1_0
+  +--> SET_TIME/1_0
+  +--> _WRITE_COM/1_0
+  +--> ?CO?1_0
+  +--> _DELAYMS/1_0
+
+_WRITE_DS/1_0               ----- -----  ----- -----
+
+SET_TIME/1_0                ----- -----  ----- -----
+  +--> _WRITE_DS/1_0
+
+_WRITE_COM/1_0              ----- -----  ----- -----
+  +--> _DELAYMS/1_0
+
+_DELAYMS/1_0                ----- -----  ----- -----
+  +--> _WRITE_DATE/1_0
+
+_WRITE_DATE/1_0             ----- -----  ----- -----
+  +--> _DELAYMS/1_0
+
+?CO?1_0                     ----- -----  ----- -----
+
+
+
+PUBLIC SYMBOLS OF MODULE:  .\Objects\1.0 (1_0)
+
+
+      VALUE       CLASS    TYPE      PUBLIC SYMBOL NAME
+      =================================================
+      00000000H   NUMBER   ---       ?C?CODESEG
+LX51 LINKER/LOCATER V4.66.66.0                                                        01/25/2018  11:40:26  PAGE 3
+
+
+      010000B0H   CODE     ---       ?C?SCDIV
+      00000000H   NUMBER   ---       ?C?XDATASEG
+      0100013BH   CODE     ---       ?C_START
+      01000000H   CODE     ---       ?C_STARTUP
+      0100006AH   CODE     ---       _delayms
+      010000D2H   CODE     ---       _read_ds
+      01000111H   CODE     ---       _write_com
+      01000120H   CODE     ---       _write_date
+      01000099H   CODE     ---       _write_ds
+*DEL*:00000000H   CODE     ---       _write_nyr
+*DEL*:00000000H   CODE     ---       _write_sfm
+*DEL*:00000000H   CODE     ---       _write_week
+*SFR* 000000D0H.6 DATA     BIT       AC
+*SFR* 000000E0H   DATA     BYTE      ACC
+      00000009H   DATA     CHAR      afen
+      00000008H   DATA     CHAR      amiao
+      0000000BH   DATA     CHAR      ashi
+      0100013EH   CONST    ---       atable
+*SFR* 000000F0H   DATA     BYTE      B
+*SFR* 000000A0H   DATA     BIT       beep
+      0100014FH   CONST    ---       btable
+      0000000DH   DATA     BYTE      count
+*SFR* 000000D0H.7 DATA     BIT       CY
+      00000012H   DATA     CHAR      day
+*DEL*:00000000H   CODE     ---       di
+*SFR* 00000083H   DATA     BYTE      DPH
+*SFR* 00000082H   DATA     BYTE      DPL
+*SFR* 000000B0H.4 DATA     BIT       dsas
+*SFR* 000000B0H.3 DATA     BIT       dscs
+*SFR* 000000B0H.6 DATA     BIT       dsds
+*SFR* 000000B0H.2 DATA     BIT       dsirq
+*SFR* 000000B0H.5 DATA     BIT       dsrw
+*SFR* 000000A8H.7 DATA     BIT       EA
+*SFR* 000000A8H.4 DATA     BIT       ES
+*SFR* 000000A8H.1 DATA     BIT       ET0
+*SFR* 000000A8H.3 DATA     BIT       ET1
+*SFR* 000000A8H   DATA     BIT       EX0
+*SFR* 000000A8H.2 DATA     BIT       EX1
+      010000ECH   CODE     ---       exter
+*SFR* 000000D0H.5 DATA     BIT       F0
+      00000011H   DATA     CHAR      fen
+      0000000AH   DATA     BYTE      flag
+      00000020H.1 BIT      BIT       flag1
+      00000020H.2 BIT      BIT       flag_ri
+*SFR* 000000A8H   DATA     BYTE      IE
+*SFR* 00000088H.1 DATA     BIT       IE0
+*SFR* 00000088H.3 DATA     BIT       IE1
+      01000006H   CODE     ---       init
+*SFR* 000000B0H.2 DATA     BIT       INT0
+*SFR* 000000B0H.3 DATA     BIT       INT1
+*SFR* 000000B8H   DATA     BYTE      IP
+*SFR* 00000088H   DATA     BIT       IT0
+*SFR* 00000088H.2 DATA     BIT       IT1
+*DEL*:00000000H   CODE     ---       keyscan
+*SFR* 000000A0H.2 DATA     BIT       lcden
+*SFR* 000000A0H.3 DATA     BIT       lcdrs
+      0100013BH   CODE     ---       main
+      0000000CH   DATA     CHAR      miao
+      0000000FH   DATA     CHAR      mouth
+*SFR* 000000D0H.2 DATA     BIT       OV
+*SFR* 000000D0H   DATA     BIT       P
+*SFR* 00000080H   DATA     BYTE      P0
+*SFR* 00000090H   DATA     BYTE      P1
+*SFR* 000000A0H   DATA     BYTE      P2
+*SFR* 000000B0H   DATA     BYTE      P3
+LX51 LINKER/LOCATER V4.66.66.0                                                        01/25/2018  11:40:26  PAGE 4
+
+
+*SFR* 00000087H   DATA     BYTE      PCON
+*SFR* 000000B8H.4 DATA     BIT       PS
+*SFR* 000000D0H   DATA     BYTE      PSW
+*SFR* 000000B8H.1 DATA     BIT       PT0
+*SFR* 000000B8H.3 DATA     BIT       PT1
+*SFR* 000000B8H   DATA     BIT       PX0
+*SFR* 000000B8H.2 DATA     BIT       PX1
+*SFR* 00000098H.2 DATA     BIT       RB8
+*SFR* 000000B0H.7 DATA     BIT       RD
+*DEL*:00000000H   CODE     ---       read_alarm
+*SFR* 00000098H.4 DATA     BIT       REN
+*SFR* 00000098H   DATA     BIT       RI
+*SFR* 000000D0H.3 DATA     BIT       RS0
+*SFR* 000000D0H.4 DATA     BIT       RS1
+*SFR* 000000B0H   DATA     BIT       RXD
+*SFR* 000000A0H.1 DATA     BIT       s1
+      00000015H   DATA     BYTE      s1num
+*SFR* 000000B0H.7 DATA     BIT       s2
+*SFR* 000000B0H.1 DATA     BIT       s3
+*SFR* 000000B0H   DATA     BIT       s4
+*SFR* 00000099H   DATA     BYTE      SBUF
+*SFR* 00000098H   DATA     BYTE      SCON
+      01000101H   CODE     ---       set_time
+      00000013H   DATA     CHAR      shi
+*SFR* 00000098H.7 DATA     BIT       SM0
+*SFR* 00000098H.6 DATA     BIT       SM1
+*SFR* 00000098H.5 DATA     BIT       SM2
+*SFR* 00000081H   DATA     BYTE      SP
+*SFR* 000000B0H.4 DATA     BIT       T0
+      00000014H   DATA     BYTE      t0_num
+*SFR* 000000B0H.5 DATA     BIT       T1
+*SFR* 00000098H.3 DATA     BIT       TB8
+*SFR* 00000088H   DATA     BYTE      TCON
+*SFR* 00000088H.5 DATA     BIT       TF0
+*SFR* 00000088H.7 DATA     BIT       TF1
+*SFR* 0000008CH   DATA     BYTE      TH0
+*SFR* 0000008DH   DATA     BYTE      TH1
+*SFR* 00000098H.1 DATA     BIT       TI
+*SFR* 0000008AH   DATA     BYTE      TL0
+*SFR* 0000008BH   DATA     BYTE      TL1
+*SFR* 00000089H   DATA     BYTE      TMOD
+      00000020H.0 BIT      BIT       tnum
+*SFR* 00000088H.4 DATA     BIT       TR0
+*SFR* 00000088H.6 DATA     BIT       TR1
+*SFR* 000000B0H.1 DATA     BIT       TXD
+      0000000EH   DATA     CHAR      week
+*SFR* 000000B0H.6 DATA     BIT       WR
+      00000010H   DATA     CHAR      year
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\1.0 (1_0)
+
+      VALUE       REP       CLASS    TYPE      SYMBOL NAME
+      ====================================================
+      ---         MODULE    ---      ---       1_0
+      00000015H   PUBLIC    DATA     BYTE      s1num
+      00000020H.2 PUBLIC    BIT      BIT       flag_ri
+      00000014H   PUBLIC    DATA     BYTE      t0_num
+      00000020H.1 PUBLIC    BIT      BIT       flag1
+      00000020H.0 PUBLIC    BIT      BIT       tnum
+      00000013H   PUBLIC    DATA     CHAR      shi
+      00000012H   PUBLIC    DATA     CHAR      day
+      00000011H   PUBLIC    DATA     CHAR      fen
+      00000010H   PUBLIC    DATA     CHAR      year
+LX51 LINKER/LOCATER V4.66.66.0                                                        01/25/2018  11:40:26  PAGE 5
+
+
+      0000000FH   PUBLIC    DATA     CHAR      mouth
+      0000000EH   PUBLIC    DATA     CHAR      week
+      0000000DH   PUBLIC    DATA     BYTE      count
+      0000000CH   PUBLIC    DATA     CHAR      miao
+      0000000BH   PUBLIC    DATA     CHAR      ashi
+      0000000AH   PUBLIC    DATA     BYTE      flag
+      00000009H   PUBLIC    DATA     CHAR      afen
+      00000008H   PUBLIC    DATA     CHAR      amiao
+      0100014FH   PUBLIC    CONST    ---       btable
+      0100013EH   PUBLIC    CONST    ---       atable
+      010000ECH   PUBLIC    CODE     ---       exter
+      01000101H   PUBLIC    CODE     ---       set_time
+      01000099H   PUBLIC    CODE     ---       _write_ds
+      01000006H   PUBLIC    CODE     ---       init
+      01000120H   PUBLIC    CODE     ---       _write_date
+      01000111H   PUBLIC    CODE     ---       _write_com
+      0100006AH   PUBLIC    CODE     ---       _delayms
+      010000D2H   PUBLIC    CODE     ---       _read_ds
+      0100013BH   PUBLIC    CODE     ---       main
+      00000080H   SFRSYM    DATA     BYTE      P0
+      00000090H   SFRSYM    DATA     BYTE      P1
+      000000A0H   SFRSYM    DATA     BYTE      P2
+      000000B0H   SFRSYM    DATA     BYTE      P3
+      000000B0H.4 SFRSYM    DATA     BIT       T0
+      000000D0H.6 SFRSYM    DATA     BIT       AC
+      000000B0H.5 SFRSYM    DATA     BIT       T1
+      000000A8H.7 SFRSYM    DATA     BIT       EA
+      000000A0H.2 SFRSYM    DATA     BIT       lcden
+      000000A8H   SFRSYM    DATA     BYTE      IE
+      000000B0H.7 SFRSYM    DATA     BIT       RD
+      000000A8H.4 SFRSYM    DATA     BIT       ES
+      000000B8H   SFRSYM    DATA     BYTE      IP
+      000000A0H.3 SFRSYM    DATA     BIT       lcdrs
+      00000098H   SFRSYM    DATA     BIT       RI
+      000000B0H.2 SFRSYM    DATA     BIT       INT0
+      000000D0H.7 SFRSYM    DATA     BIT       CY
+      00000098H.1 SFRSYM    DATA     BIT       TI
+      000000B0H.3 SFRSYM    DATA     BIT       INT1
+      000000A0H   SFRSYM    DATA     BIT       beep
+      000000B8H.4 SFRSYM    DATA     BIT       PS
+      00000081H   SFRSYM    DATA     BYTE      SP
+      000000A0H.1 SFRSYM    DATA     BIT       s1
+      000000B0H.7 SFRSYM    DATA     BIT       s2
+      000000D0H.2 SFRSYM    DATA     BIT       OV
+      000000B0H.2 SFRSYM    DATA     BIT       dsirq
+      000000B0H.1 SFRSYM    DATA     BIT       s3
+      000000B0H   SFRSYM    DATA     BIT       s4
+      000000B0H.6 SFRSYM    DATA     BIT       WR
+      000000B0H.4 SFRSYM    DATA     BIT       dsas
+      000000B0H.3 SFRSYM    DATA     BIT       dscs
+      000000B0H.6 SFRSYM    DATA     BIT       dsds
+      00000099H   SFRSYM    DATA     BYTE      SBUF
+      00000087H   SFRSYM    DATA     BYTE      PCON
+      00000098H   SFRSYM    DATA     BYTE      SCON
+      00000089H   SFRSYM    DATA     BYTE      TMOD
+      00000088H   SFRSYM    DATA     BYTE      TCON
+      00000088H.1 SFRSYM    DATA     BIT       IE0
+      00000088H.3 SFRSYM    DATA     BIT       IE1
+      000000F0H   SFRSYM    DATA     BYTE      B
+      000000B0H.5 SFRSYM    DATA     BIT       dsrw
+      000000E0H   SFRSYM    DATA     BYTE      ACC
+      000000A8H.1 SFRSYM    DATA     BIT       ET0
+      000000A8H.3 SFRSYM    DATA     BIT       ET1
+      00000088H.5 SFRSYM    DATA     BIT       TF0
+      00000088H.7 SFRSYM    DATA     BIT       TF1
+LX51 LINKER/LOCATER V4.66.66.0                                                        01/25/2018  11:40:26  PAGE 6
+
+
+      00000098H.2 SFRSYM    DATA     BIT       RB8
+      0000008CH   SFRSYM    DATA     BYTE      TH0
+      000000A8H   SFRSYM    DATA     BIT       EX0
+      00000088H   SFRSYM    DATA     BIT       IT0
+      0000008DH   SFRSYM    DATA     BYTE      TH1
+      00000098H.3 SFRSYM    DATA     BIT       TB8
+      000000A8H.2 SFRSYM    DATA     BIT       EX1
+      00000088H.2 SFRSYM    DATA     BIT       IT1
+      000000D0H   SFRSYM    DATA     BIT       P
+      00000098H.7 SFRSYM    DATA     BIT       SM0
+      0000008AH   SFRSYM    DATA     BYTE      TL0
+      00000098H.6 SFRSYM    DATA     BIT       SM1
+      0000008BH   SFRSYM    DATA     BYTE      TL1
+      00000098H.5 SFRSYM    DATA     BIT       SM2
+      000000B8H.1 SFRSYM    DATA     BIT       PT0
+      000000B8H.3 SFRSYM    DATA     BIT       PT1
+      000000D0H.3 SFRSYM    DATA     BIT       RS0
+      00000088H.4 SFRSYM    DATA     BIT       TR0
+      000000D0H.4 SFRSYM    DATA     BIT       RS1
+      00000088H.6 SFRSYM    DATA     BIT       TR1
+      000000B8H   SFRSYM    DATA     BIT       PX0
+      000000B8H.2 SFRSYM    DATA     BIT       PX1
+      00000083H   SFRSYM    DATA     BYTE      DPH
+      00000082H   SFRSYM    DATA     BYTE      DPL
+      00000098H.4 SFRSYM    DATA     BIT       REN
+      000000B0H   SFRSYM    DATA     BIT       RXD
+      000000B0H.1 SFRSYM    DATA     BIT       TXD
+      000000D0H.5 SFRSYM    DATA     BIT       F0
+      000000D0H   SFRSYM    DATA     BYTE      PSW
+
+      0100013BH   BLOCK     CODE     ---       LVL=0
+      0100013BH   LINE      CODE     ---       #38
+      0100013BH   LINE      CODE     ---       #39
+      0100013BH   LINE      CODE     ---       #40
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      010000D2H   BLOCK     CODE     ---       LVL=0
+      00000007H   SYMBOL    DATA     BYTE      add
+      010000D2H   BLOCK     CODE     NEAR LAB  LVL=1
+      00000007H   SYMBOL    DATA     BYTE      ds_date
+      ---         BLOCKEND  ---      ---       LVL=1
+      010000D2H   LINE      CODE     ---       #43
+      010000D2H   LINE      CODE     ---       #44
+      010000D2H   LINE      CODE     ---       #46
+      010000D4H   LINE      CODE     ---       #47
+      010000D6H   LINE      CODE     ---       #48
+      010000D8H   LINE      CODE     ---       #49
+      010000DAH   LINE      CODE     ---       #50
+      010000DCH   LINE      CODE     ---       #51
+      010000DEH   LINE      CODE     ---       #52
+      010000E0H   LINE      CODE     ---       #53
+      010000E3H   LINE      CODE     ---       #54
+      010000E5H   LINE      CODE     ---       #55
+      010000E7H   LINE      CODE     ---       #56
+      010000E9H   LINE      CODE     ---       #57
+      010000EBH   LINE      CODE     ---       #58
+      010000EBH   LINE      CODE     ---       #59
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      01000060H   BLOCK     CODE     ---       LVL=0
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      0100006AH   BLOCK     CODE     ---       LVL=0
+      00000006H   SYMBOL    DATA     WORD      z
+      00000004H   SYMBOL    DATA     WORD      x
+LX51 LINKER/LOCATER V4.66.66.0                                                        01/25/2018  11:40:26  PAGE 7
+
+
+      00000002H   SYMBOL    DATA     WORD      y
+      0100006AH   BLOCK     CODE     NEAR LAB  LVL=1
+      00000004H   SYMBOL    DATA     WORD      x
+      00000002H   SYMBOL    DATA     WORD      y
+      ---         BLOCKEND  ---      ---       LVL=1
+      0100006AH   LINE      CODE     ---       #61
+      0100006AH   LINE      CODE     ---       #62
+      0100006AH   LINE      CODE     ---       #64
+      01000077H   LINE      CODE     ---       #65
+      0100008BH   LINE      CODE     ---       #66
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      01000111H   BLOCK     CODE     ---       LVL=0
+      00000007H   SYMBOL    DATA     BYTE      com
+      01000111H   LINE      CODE     ---       #74
+      01000111H   LINE      CODE     ---       #75
+      01000111H   LINE      CODE     ---       #76
+      01000113H   LINE      CODE     ---       #77
+      01000115H   LINE      CODE     ---       #78
+      01000118H   LINE      CODE     ---       #79
+      0100011AH   LINE      CODE     ---       #80
+      0100011DH   LINE      CODE     ---       #81
+      0100011FH   LINE      CODE     ---       #82
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      01000120H   BLOCK     CODE     ---       LVL=0
+      00000007H   SYMBOL    DATA     BYTE      date
+      01000120H   LINE      CODE     ---       #84
+      01000120H   LINE      CODE     ---       #85
+      01000120H   LINE      CODE     ---       #86
+      01000122H   LINE      CODE     ---       #87
+      01000124H   LINE      CODE     ---       #88
+      01000127H   LINE      CODE     ---       #89
+      01000129H   LINE      CODE     ---       #90
+      0100012CH   LINE      CODE     ---       #91
+      0100012EH   LINE      CODE     ---       #92
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      01000006H   BLOCK     CODE     ---       LVL=0
+      01000006H   BLOCK     CODE     NEAR LAB  LVL=1
+      00000001H   SYMBOL    DATA     BYTE      num
+      ---         BLOCKEND  ---      ---       LVL=1
+      01000006H   LINE      CODE     ---       #94
+      01000006H   LINE      CODE     ---       #95
+      01000006H   LINE      CODE     ---       #97
+      01000008H   LINE      CODE     ---       #98
+      0100000AH   LINE      CODE     ---       #99
+      0100000CH   LINE      CODE     ---       #100
+      0100000EH   LINE      CODE     ---       #101
+      01000011H   LINE      CODE     ---       #102
+      01000013H   LINE      CODE     ---       #103
+      01000016H   LINE      CODE     ---       #105
+      0100001DH   LINE      CODE     ---       #106
+      01000024H   LINE      CODE     ---       #107
+      01000027H   LINE      CODE     ---       #109
+      01000029H   LINE      CODE     ---       #110
+      0100002EH   LINE      CODE     ---       #111
+      01000033H   LINE      CODE     ---       #112
+      01000038H   LINE      CODE     ---       #113
+      0100003DH   LINE      CODE     ---       #114
+      01000042H   LINE      CODE     ---       #115
+      01000044H   LINE      CODE     ---       #116
+      01000044H   LINE      CODE     ---       #117
+      01000047H   LINE      CODE     ---       #118
+      0100004AH   LINE      CODE     ---       #119
+LX51 LINKER/LOCATER V4.66.66.0                                                        01/25/2018  11:40:26  PAGE 8
+
+
+      0100004EH   LINE      CODE     ---       #120
+      01000053H   LINE      CODE     ---       #121
+      01000055H   LINE      CODE     ---       #122
+      01000055H   LINE      CODE     ---       #123
+      01000058H   LINE      CODE     ---       #124
+      0100005BH   LINE      CODE     ---       #125
+      0100005FH   LINE      CODE     ---       #126
+      ---         BLOCKEND  ---      ---       LVL=0
+      00000007H   SYMBOL    DATA     BYTE      add
+      00000005H   SYMBOL    DATA     CHAR      date
+      00000001H   SYMBOL    DATA     CHAR      ge
+      00000007H   SYMBOL    DATA     BYTE      add
+      00000005H   SYMBOL    DATA     CHAR      date
+      00000001H   SYMBOL    DATA     CHAR      ge
+      00000001H   SYMBOL    DATA     BYTE      m
+      01000160H   SYMBOL    CONST    ---       table1
+      01000164H   SYMBOL    CONST    ---       table2
+      01000168H   SYMBOL    CONST    ---       table3
+      0100016CH   SYMBOL    CONST    ---       table4
+      01000170H   SYMBOL    CONST    ---       table5
+      01000174H   SYMBOL    CONST    ---       table6
+      01000178H   SYMBOL    CONST    ---       table7
+
+      0100008CH   BLOCK     CODE     ---       LVL=0
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      01000099H   BLOCK     CODE     ---       LVL=0
+      00000007H   SYMBOL    DATA     BYTE      add
+      00000005H   SYMBOL    DATA     BYTE      date
+      01000099H   LINE      CODE     ---       #283
+      01000099H   LINE      CODE     ---       #284
+      01000099H   LINE      CODE     ---       #285
+      0100009BH   LINE      CODE     ---       #286
+      0100009DH   LINE      CODE     ---       #287
+      0100009FH   LINE      CODE     ---       #288
+      010000A1H   LINE      CODE     ---       #289
+      010000A3H   LINE      CODE     ---       #290
+      010000A5H   LINE      CODE     ---       #291
+      010000A7H   LINE      CODE     ---       #292
+      010000A9H   LINE      CODE     ---       #293
+      010000ABH   LINE      CODE     ---       #294
+      010000ADH   LINE      CODE     ---       #295
+      010000AFH   LINE      CODE     ---       #296
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      01000101H   BLOCK     CODE     ---       LVL=0
+      01000101H   LINE      CODE     ---       #298
+      01000101H   LINE      CODE     ---       #299
+      01000101H   LINE      CODE     ---       #300
+      01000107H   LINE      CODE     ---       #301
+      01000107H   LINE      CODE     ---       #302
+      01000107H   LINE      CODE     ---       #303
+      01000107H   LINE      CODE     ---       #304
+      0100010AH   LINE      CODE     ---       #305
+      0100010AH   LINE      CODE     ---       #306
+      0100010AH   LINE      CODE     ---       #307
+      0100010AH   LINE      CODE     ---       #308
+      0100010DH   LINE      CODE     ---       #309
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      010000ECH   BLOCK     CODE     ---       LVL=0
+      010000F3H   BLOCK     CODE     NEAR LAB  LVL=1
+      00000016H   SYMBOL    DATA     BYTE      c
+      ---         BLOCKEND  ---      ---       LVL=1
+      010000ECH   LINE      CODE     ---       #319
+LX51 LINKER/LOCATER V4.66.66.0                                                        01/25/2018  11:40:26  PAGE 9
+
+
+      010000F3H   LINE      CODE     ---       #322
+      010000F5H   LINE      CODE     ---       #323
+      010000FCH   LINE      CODE     ---       #324
+      ---         BLOCKEND  ---      ---       LVL=0
+
+      ---         MODULE    ---      ---       ?C_STARTUP
+      01000000H   PUBLIC    CODE     ---       ?C_STARTUP
+
+      ---         MODULE    ---      ---       ?C?SCDIV
+      010000B0H   PUBLIC    CODE     ---       ?C?SCDIV
+
+
+
+*** WARNING L48: IGNORED RECURSIVE CALL
+    CALLED:  _DELAYMS/1_0
+    CALLER:  _WRITE_DATE/1_0
+
+Program Size: data=24.3 xdata=0 const=62 code=318
+LX51 RUN COMPLETE.  1 WARNING(S),  0 ERROR(S)

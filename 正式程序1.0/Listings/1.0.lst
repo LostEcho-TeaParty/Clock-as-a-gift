@@ -1,0 +1,612 @@
+C51 COMPILER V9.56.0.0   1_0                                                               01/26/2018 19:57:50 PAGE 1   
+
+
+C51 COMPILER V9.56.0.0, COMPILATION OF MODULE 1_0
+OBJECT MODULE PLACED IN .\Objects\1.0.obj
+COMPILER INVOKED BY: E:\Keil_v5\C51\BIN\C51.EXE 1.0.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\1.0.l
+                    -st) TABS(2) OBJECT(.\Objects\1.0.obj)
+
+line level    source
+
+   1          /***********************************************
+   2          1.0程序内容
+   3          调用之前单片机定时器时钟程序
+   4          新增基础的ds12c887使用程序
+   5          
+   6          结束更新1系程序 2018/1/26 15:17
+   7          ***********************************************/
+   8          #include <reg51.h>
+   9          
+  10          #define uchar unsigned char
+  11          #define uint unsigned int
+  12          
+  13          sbit beep=P2^0;
+  14          sbit lcdrs=P2^3;
+  15          sbit lcden=P2^2;
+  16          sbit s1=P2^1;//功能键
+  17          sbit s2=P3^7;//增大建
+  18          sbit s3=P3^1;//减小键
+  19          sbit s4=P3^0;//闹钟查看健
+  20          sbit dscs=P3^3;
+  21          sbit dsas=P3^4;
+  22          sbit dsrw=P3^5;
+  23          sbit dsds=P3^6;
+  24          sbit dsirq=P3^2;
+  25          
+  26          bit flag1,flag_ri,tnum,ri_enable,full_enable,apnum;
+  27          /**************************************************
+  28          flag1=闹铃设置全局变量
+  29          flag_ri=闹铃中断信号
+  30          tbnum=调整按键变动信号
+  31          ri_enable=闹铃允许变量
+  32          full_enable=24小时制允许变量
+  33          apnum=AM/PM控制变量
+  34          **************************************************/
+  35          uchar count,s1num,flag;
+  36          /**************************************************
+  37          count=定时器计数变量（可能不会用到，考虑中断运行双程序）
+  38          s1num=s1按键全局变量
+  39          flag=正常显示确定位
+  40          **************************************************/
+  41          char miao,shi,fen,year,mouth,day,we,amiao,afen,ashi;
+  42          /**************************************************
+  43          无所谓char or uchar
+  44          **************************************************/
+  45          uchar code atable[]=" 20  -  -       ";//液晶固定显示内容
+  46          uchar code btable[]="      :  :      ";
+  47          
+  48          void delayms(uint z);
+  49          void di();
+  50          void write_com(uchar com);
+  51          void write_date(uchar date);
+  52          void init();
+  53          void write_sfm(uchar add,char date);//1602刷新时分秒函数 时为4 分为7 秒为10
+  54          void write_nyr(uchar add,char date);//1602刷新年月日函数 年为3 月为6 日为9
+C51 COMPILER V9.56.0.0   1_0                                                               01/26/2018 19:57:50 PAGE 2   
+
+  55          void write_week(char we);//1602刷新星期函数 位数为12
+  56          void keyscan();
+  57          void write_ds(uchar add,uchar date);
+  58          uchar read_ds(uchar add);
+  59          void set_time();//首次使用
+  60          void read_alarm();
+  61          
+  62          void main()
+  63          {
+  64   1        init();
+  65   1        
+  66   1        
+  67   1        while(1)
+  68   1        {
+  69   2          keyscan();
+  70   2          if(flag_ri==1)
+  71   2          {
+  72   3            di();
+  73   3            delayms(100);
+  74   3            di();
+  75   3            delayms(500);
+  76   3          }
+  77   2          
+  78   2          
+  79   2          if(s1num==0&&flag==0)
+  80   2          {
+  81   3            if(ri_enable==1)
+  82   3            {
+  83   4              write_com(0x80+0x40);
+  84   4              write_date('R');
+  85   4              write_date('i');
+  86   4            }
+  87   3            if(full_enable==1)
+  88   3            {
+  89   4              shi=read_ds(4);
+  90   4            }
+  91   3            else
+  92   3            {
+  93   4              apnum=read_ds(4);
+  94   4              apnum=apnum&0x80;
+  95   4              if(apnum==0)
+  96   4              {
+  97   5                write_com(0x80+0x40+13);
+  98   5                write_date('A');
+  99   5                write_date('m');
+ 100   5                shi=read_ds(4);
+ 101   5              }
+ 102   4              else
+ 103   4              {
+ 104   5                write_com(0x80+0x40+13);
+ 105   5                write_date('P');
+ 106   5                write_date('m');
+ 107   5                shi=read_ds(4);
+ 108   5                shi=shi<<1;
+ 109   5                shi=shi>>1;
+ 110   5              }
+ 111   4            }
+ 112   3            year=read_ds(9);
+ 113   3            mouth=read_ds(8);
+ 114   3            day=read_ds(7);
+ 115   3            we=read_ds(6);
+ 116   3            fen=read_ds(2);
+C51 COMPILER V9.56.0.0   1_0                                                               01/26/2018 19:57:50 PAGE 3   
+
+ 117   3            miao=read_ds(0);
+ 118   3            write_sfm(10,miao);
+ 119   3            write_sfm(7,fen);
+ 120   3            write_sfm(4,shi);
+ 121   3            write_week(we);
+ 122   3            write_nyr(3,year);
+ 123   3            write_nyr(6,mouth);
+ 124   3            write_nyr(9,day);
+ 125   3          }
+ 126   2        }
+ 127   1        
+ 128   1      }
+ 129          
+ 130          uchar read_ds(uchar add)
+ 131          {
+ 132   1        uchar ds_date;
+ 133   1        dsas=1;
+ 134   1        dsds=1;
+ 135   1        dsrw=1;
+ 136   1        dscs=0;
+ 137   1        P1=add;
+ 138   1        dsas=0;
+ 139   1        dsds=0;
+ 140   1        P1=0xff;
+ 141   1        ds_date=P0;
+ 142   1        dsds=1;
+ 143   1        dsas=1;
+ 144   1        dscs=1;
+ 145   1        return ds_date;
+ 146   1      }
+ 147          
+ 148          void delayms(uint z)
+ 149          {
+ 150   1        uint x,y;
+ 151   1        for(x=z;z>0;x--)
+ 152   1          for(y=123;y>0;y--);
+ 153   1      }
+ 154          void di()
+ 155          {
+ 156   1        beep=0;
+ 157   1        delayms(100);
+ 158   1        beep=1;
+ 159   1      }
+ 160          
+ 161          void write_com(uchar com)
+ 162          {
+ 163   1        lcdrs=0;
+ 164   1        P0=com;
+ 165   1        delayms(5);
+ 166   1        lcden=1;
+ 167   1        delayms(5);
+ 168   1        lcden=0;
+ 169   1      }
+ 170          
+ 171          void write_date(uchar date)
+ 172          {
+ 173   1        lcdrs=1;
+ 174   1        P0=date;
+ 175   1        delayms(5);
+ 176   1        lcden=1;
+ 177   1        delayms(5);
+ 178   1        lcden=0;
+C51 COMPILER V9.56.0.0   1_0                                                               01/26/2018 19:57:50 PAGE 4   
+
+ 179   1      }
+ 180          
+ 181          void init()
+ 182          {
+ 183   1        uchar num,bcon;
+ 184   1        EA=1;//总中断
+ 185   1        EX0=1;//外部中断0
+ 186   1        IT1=1;//负跳变沿触发
+ 187   1        flag1=0;
+ 188   1        s1num=0;
+ 189   1        
+ 190   1        write_ds(0x0a,0x20);//一次
+ 191   1        write_ds(0x0b,0x26);
+ 192   1        set_time();
+ 193   1        
+ 194   1        bcon=read_ds(0x0b);
+ 195   1        bcon=bcon&0x22;
+ 196   1        switch(bcon)
+ 197   1        {
+ 198   2          case 0x22:
+ 199   2            ri_enable=1;
+ 200   2            full_enable=1;
+ 201   2            break;
+ 202   2          case 0x02:
+ 203   2            ri_enable=0;
+ 204   2            full_enable=1;
+ 205   2            break;
+ 206   2          case 0x20:
+ 207   2            ri_enable=1;
+ 208   2            full_enable=0;
+ 209   2            break;
+ 210   2          case 0x00:
+ 211   2            ri_enable=0;
+ 212   2            full_enable=0;
+ 213   2        }
+ 214   1        
+ 215   1        lcden=0;
+ 216   1        write_com(0x38);//1602init
+ 217   1        write_com(0x0c);
+ 218   1        write_com(0x06);
+ 219   1        write_com(0x01);
+ 220   1        write_com(0x80);
+ 221   1        for(num=0;num<9;num++)
+ 222   1        {
+ 223   2          write_date(atable[num]);
+ 224   2          delayms(5);
+ 225   2        }
+ 226   1        write_com(0x80+0x40);
+ 227   1        for(num=0;num<10;num++)
+ 228   1        {
+ 229   2          write_date(btable[num]);
+ 230   2          delayms(5);
+ 231   2        }
+ 232   1      }
+ 233          
+ 234          void write_sfm(uchar add,char date)
+ 235          {//1602刷新时分秒函数 时为4 分为7 秒为10
+ 236   1        char shi,ge;
+ 237   1        shi=date/10;
+ 238   1        ge=date%10;
+ 239   1        write_com(0x80+0x40+add);
+ 240   1        write_date(0x30+shi);
+C51 COMPILER V9.56.0.0   1_0                                                               01/26/2018 19:57:50 PAGE 5   
+
+ 241   1        write_date(0x30+ge);
+ 242   1      }
+ 243          
+ 244          void write_nyr(uchar add,char date)
+ 245          {//1602刷新年月日函数 年为3 月为6 日为9
+ 246   1        char shi,ge;
+ 247   1        shi=date/10;
+ 248   1        ge=date%10;
+ 249   1        write_com(0x80+add);
+ 250   1        write_date(0x30+shi);
+ 251   1        write_date(0x30+ge);
+ 252   1      }
+ 253          
+ 254          void write_week(char we)
+ 255          {//1602刷新星期函数 位数为12
+ 256   1        uchar m;
+ 257   1        uchar code table1[]="MON";
+ 258   1        uchar code table2[]="TUE";
+ 259   1        uchar code table3[]="WED";
+ 260   1        uchar code table4[]="THU";
+ 261   1        uchar code table5[]="FRI";
+ 262   1        uchar code table6[]="SAT";
+ 263   1        uchar code table7[]="SUN";
+ 264   1        write_com(0x80+12);
+ 265   1        for(m=0;m<3;m++)
+ 266   1        {
+ 267   2          switch(we)
+ 268   2          {
+ 269   3            case 1:
+ 270   3              write_date(table1[m]);
+ 271   3              break;
+ 272   3            case 2:
+ 273   3              write_date(table2[m]);
+ 274   3              break;
+ 275   3            case 3:
+ 276   3              write_date(table3[m]);
+ 277   3              break;
+ 278   3            case 4:
+ 279   3              write_date(table4[m]);
+ 280   3              break;
+ 281   3            case 5:
+ 282   3              write_date(table5[m]);
+ 283   3              break;
+ 284   3            case 6:
+ 285   3              write_date(table6[m]);
+ 286   3              break;
+ 287   3            case 7:
+ 288   3              write_date(table7[m]);
+ 289   3              break;  
+ 290   3          }
+ 291   2        }
+ 292   1      }
+ 293          
+ 294          void keyscan()
+ 295          {
+ 296   1        uchar bcon;
+ 297   1        if(flag_ri==1)//按任意键停止闹铃
+ 298   1        {
+ 299   2          if((s1==0)||(s2==0)||(s3==0)||(s4==0))
+ 300   2          {
+ 301   3            delayms(5);
+ 302   3            if((s1==0)||(s2==0)||(s3==0)||(s4==0))
+C51 COMPILER V9.56.0.0   1_0                                                               01/26/2018 19:57:50 PAGE 6   
+
+ 303   3            {
+ 304   4              while(!(s1&&s2&&s3&&s4));
+ 305   4              di();
+ 306   4              flag_ri=0;
+ 307   4            }
+ 308   3          }
+ 309   2        }
+ 310   1        if(s1==0)
+ 311   1        {
+ 312   2          delayms(5);
+ 313   2          if(s1==0)
+ 314   2          {
+ 315   3            s1num++;
+ 316   3            switch(s1num)
+ 317   3            {
+ 318   4              case 1:
+ 319   4                write_com(0x80+0x40+13);
+ 320   4                write_com(0x0f);
+ 321   4                tnum=0;
+ 322   4                break;
+ 323   4              case 2:
+ 324   4                write_com(0x80+0x40+10);
+ 325   4                break;
+ 326   4              case 3:
+ 327   4                write_com(0x80+0x40+7);
+ 328   4                break;
+ 329   4              case 4:
+ 330   4                write_com(0x80+0x40+4);
+ 331   4                break;
+ 332   4              case 5:
+ 333   4                write_com(0x80+0x40);
+ 334   4                break;
+ 335   4              case 6:
+ 336   4                write_com(0x80+12);
+ 337   4                break;
+ 338   4              case 7:
+ 339   4                write_com(0x80+9);
+ 340   4                break;
+ 341   4              case 8:
+ 342   4                write_com(0x80+6);
+ 343   4                break;
+ 344   4              case 9:
+ 345   4                write_com(0x80+3);
+ 346   4                break;
+ 347   4              case 10:
+ 348   4                s1num=0;
+ 349   4                write_com(0x0c);
+ 350   4                if(tnum==1)
+ 351   4                {
+ 352   5                  write_ds(0x0b,0x84);
+ 353   5                  write_ds(0,miao);
+ 354   5                  write_ds(2,fen);
+ 355   5                  write_ds(4,shi);
+ 356   5                  write_ds(6,we);
+ 357   5                  write_ds(7,day);
+ 358   5                  write_ds(8,mouth);
+ 359   5                  write_ds(9,year);
+ 360   5                  bcon=0x04;
+ 361   5                  bcon=bcon+ri_enable*32+full_enable*2;
+ 362   5                  write_ds(0x0b,bcon);
+ 363   5                }
+ 364   4                break;
+C51 COMPILER V9.56.0.0   1_0                                                               01/26/2018 19:57:50 PAGE 7   
+
+ 365   4          }
+ 366   3        }
+ 367   2          
+ 368   2        }
+ 369   1        if(s1num!=0)
+ 370   1        {
+ 371   2          if(s2==0)
+ 372   2          {
+ 373   3            delayms(5);
+ 374   3            if(s2==0)
+ 375   3            {
+ 376   4              tnum=1;
+ 377   4              di();
+ 378   4              switch(s1num)
+ 379   4              {
+ 380   5                case 1:
+ 381   5                  full_enable=~full_enable;
+ 382   5                  break;
+ 383   5                case 2:
+ 384   5                  miao++;
+ 385   5                  if(miao==60)
+ 386   5                  miao=0;
+ 387   5                  write_sfm(10,miao);
+ 388   5                  write_com(0x80+0x40+10);
+ 389   5                  break;
+ 390   5                case 3:
+ 391   5                  fen++;
+ 392   5                  if(fen==60)
+ 393   5                  fen=0;
+ 394   5                  write_sfm(7,fen);
+ 395   5                  write_com(0x80+0x40+7);
+ 396   5                  break;
+ 397   5                case 4:
+ 398   5                  shi++;
+ 399   5                  if(shi==24)
+ 400   5                  shi=0;
+ 401   5                  write_sfm(4,shi);
+ 402   5                  write_com(0x80+0x40+4);
+ 403   5                  break;
+ 404   5                case 5:
+ 405   5                  ri_enable=~ri_enable;
+ 406   5                  break;
+ 407   5                case 6:
+ 408   5                  we++;
+ 409   5                  if(we==8)
+ 410   5                  we=1;
+ 411   5                  write_week(we);
+ 412   5                  write_com(0x80+12);
+ 413   5                  break;
+ 414   5                case 7:
+ 415   5                  day++;
+ 416   5                  if(day==32)
+ 417   5                  day=1;
+ 418   5                  write_nyr(9,day);
+ 419   5                  write_com(0x80+9);
+ 420   5                  break;
+ 421   5                case 8:
+ 422   5                  mouth++;
+ 423   5                  if(mouth==13)
+ 424   5                  mouth=1;
+ 425   5                  write_nyr(6,mouth);
+ 426   5                  write_com(0x80+6);
+C51 COMPILER V9.56.0.0   1_0                                                               01/26/2018 19:57:50 PAGE 8   
+
+ 427   5                  break;
+ 428   5                case 9:
+ 429   5                  year++;
+ 430   5                  if(year==100)
+ 431   5                  year=0;
+ 432   5                  write_nyr(3,year);
+ 433   5                  write_com(0x80+3);
+ 434   5                  break;
+ 435   5              } 
+ 436   4              delayms(200);
+ 437   4            }
+ 438   3          }
+ 439   2          if(s3==0)
+ 440   2          {
+ 441   3            delayms(5);
+ 442   3            if(s3==0)
+ 443   3            {
+ 444   4              tnum=1;
+ 445   4              di();
+ 446   4              switch(s1num)
+ 447   4              {
+ 448   5                case 1:
+ 449   5                  full_enable=~full_enable;
+ 450   5                  break;
+ 451   5                case 2:
+ 452   5                  if(miao==0)
+ 453   5                  miao=60;
+ 454   5                  miao--;
+ 455   5                  write_sfm(10,miao);
+ 456   5                  write_com(0x80+0x40+10);
+ 457   5                  break;
+ 458   5                case 3:
+ 459   5                  if(fen==0)
+ 460   5                  fen=60;
+ 461   5                  fen--;
+ 462   5                  write_sfm(7,fen);
+ 463   5                  write_com(0x80+0x40+7);
+ 464   5                  break;
+ 465   5                case 4:
+ 466   5                  if(shi==0)
+ 467   5                  shi=24;
+ 468   5                  shi--;
+ 469   5                  write_sfm(4,shi);
+ 470   5                  write_com(0x80+0x40+4);
+ 471   5                  break;
+ 472   5                case 5:
+ 473   5                  ri_enable=~ri_enable;
+ 474   5                  break;
+ 475   5                case 6:
+ 476   5                  if(we==1)
+ 477   5                  we=8;
+ 478   5                  we--;
+ 479   5                  write_week(we);
+ 480   5                  write_com(0x40+12);
+ 481   5                  break;
+ 482   5                case 7:
+ 483   5                  if(day==1)
+ 484   5                  day=32;
+ 485   5                  day--;
+ 486   5                  write_nyr(9,day);
+ 487   5                  write_com(0x40+9);
+ 488   5                  break;
+C51 COMPILER V9.56.0.0   1_0                                                               01/26/2018 19:57:50 PAGE 9   
+
+ 489   5                case 8:
+ 490   5                  if(mouth==1)
+ 491   5                  mouth=13;
+ 492   5                  mouth--;
+ 493   5                  write_nyr(6,mouth);
+ 494   5                  write_com(0x40+6);
+ 495   5                  break;
+ 496   5                case 9:
+ 497   5                  if(year==0)
+ 498   5                  year=100;
+ 499   5                  year--;
+ 500   5                  write_nyr(3,year);
+ 501   5                  write_com(0x40+3);
+ 502   5                  break;
+ 503   5              } 
+ 504   4              delayms(200);
+ 505   4              
+ 506   4            }
+ 507   3          }
+ 508   2        }
+ 509   1        if(s4==0)
+ 510   1        {
+ 511   2          delayms(5);
+ 512   2          if(s4==0)
+ 513   2          {
+ 514   3            flag1=~flag1;
+ 515   3            while(!s4);
+ 516   3            di();
+ 517   3            if(flag1==0)
+ 518   3            {//保存闹钟设置
+ 519   4              flag=0;
+ 520   4              
+ 521   4            }
+ 522   3            
+ 523   3            
+ 524   3          }
+ 525   2        }
+ 526   1      }
+ 527          
+ 528          
+ 529          void write_ds(uchar add,uchar date)
+ 530          {
+ 531   1        dscs=0;
+ 532   1        dsas=1;
+ 533   1        dsds=1;
+ 534   1        dsrw=1;
+ 535   1        P1=add;
+ 536   1        dsas=0;
+ 537   1        dsrw=0;
+ 538   1        P1=date;
+ 539   1        dsrw=1;
+ 540   1        dsas=1;
+ 541   1        dscs=1;
+ 542   1      }
+ 543          
+ 544          void set_time()
+ 545          {
+ 546   1        write_ds(0,0);
+ 547   1        write_ds(1,0);
+ 548   1        write_ds(2,0);
+ 549   1        write_ds(3,0);
+ 550   1        write_ds(4,0);
+C51 COMPILER V9.56.0.0   1_0                                                               01/26/2018 19:57:50 PAGE 10  
+
+ 551   1        write_ds(5,0);
+ 552   1        write_ds(6,0);
+ 553   1        write_ds(7,0);
+ 554   1        write_ds(8,0);
+ 555   1        write_ds(9,0);
+ 556   1      }
+ 557          
+ 558          void read_alarm()
+ 559          {//读取12c887闹钟值
+ 560   1        amiao=read_ds(1);
+ 561   1        afen=read_ds(3);
+ 562   1        ashi=read_ds(5);
+ 563   1      }
+ 564          
+ 565          void exter() interrupt 0
+ 566          {
+ 567   1        uchar c;
+ 568   1        flag_ri=1;
+ 569   1        c=read_ds(0x0c);
+ 570   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1492    ----
+   CONSTANT SIZE    =     62    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     13       4
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      6    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
